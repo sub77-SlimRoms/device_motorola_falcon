@@ -1,6 +1,6 @@
 [
   {
-    "repository": "android_device_lge_msm8226-common",
+    "repository": "SlimRoms/device_lge_msm8226-common",
     "target_path": "device/lge/msm8226-common"
   }
 ]
