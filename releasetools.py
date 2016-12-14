@@ -1,5 +1,4 @@
-# Copyright (C) 2012 The Android Open Source Project
-# Copyright (C) 2014 The CyanogenMod Project
+# Copyright (C) 2016 The CyanogenMod Project
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,19 +12,39 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import os
+import re
 
-TARGET_DIR = os.getenv('OUT')
-def InstallEnd_SetSpecificDeviceConfigs(self):
-  self.output_zip.write(os.path.join(TARGET_DIR, "fixup.sh"), "fixup.sh")
-  self.script.AppendExtra('package_extract_file("fixup.sh", "/tmp/fixup.sh");')
-  self.script.AppendExtra('set_metadata("/tmp/fixup.sh", "uid", 0, "gid", 0, "mode", 0755);')
-  self.script.Mount("/system")
-  self.script.AppendExtra('run_program("/tmp/fixup.sh");')
 
-def FullOTA_InstallEnd(self):
-  InstallEnd_SetSpecificDeviceConfigs(self)
+def FullOTA_Assertions(info):
+  AddBootloaderAssertion(info, info.input_zip)
 
-def IncrementalOTA_InstallEnd(self):
-  InstallEnd_SetSpecificDeviceConfigs(self)
 
+def FullOTA_PostValidate(info):
+  ReplaceApnList(info)
+
+
+def IncrementalOTA_Assertions(info):
+  AddBootloaderAssertion(info, info.target_zip)
+
+
+def IncrementalOTA_PostValidate(info):
+  ReplaceApnList(info)
+
+
+def AddBootloaderAssertion(info, input_zip):
+  android_info = input_zip.read("OTA/android-info.txt")
+  m = re.search(r"require\s+version-bootloader\s*=\s*(\S+)", android_info)
+  if m:
+    bootloaders = m.group(1).split("|")
+    if "*" not in bootloaders:
+      info.script.AssertSomeBootloader(*bootloaders)
+    info.metadata["pre-bootloader"] = m.group(1)
+
+
+def ReplaceApnList(info):
+  info.script.AppendExtra('if getprop("ro.boot.radio") == "0x3" then')
+  info.script.Mount("/system")
+  info.script.AppendExtra('delete("/system/etc/apns-conf.xml");')
+  info.script.AppendExtra('symlink("/system/etc/apns-conf-cdma.xml", "/system/etc/apns-conf.xml");')
+  info.script.Unmount("/system")
+  info.script.AppendExtra('endif;')

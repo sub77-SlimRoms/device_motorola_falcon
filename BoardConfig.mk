@@ -22,27 +22,30 @@
 #
 
 
-# Common specific options in device_w7.mk
--include device/lge/msm8226-common/BoardConfigCommon.mk
+# Common specific options in device_falcon.mk
+-include device/motorola/msm8226-common/BoardConfigCommon.mk
 
-# Vendor Init
+# Assert
+TARGET_OTA_ASSERT_DEVICE := xt1031,xt1032,xt1033,xt1034,falcon_umts,falcon_umtsds,falcon_cdma,falcon_retuaws,falcon,falcon_gpe
+
+# Board
+TARGET_BOARD_INFO_FILE := device/motorola/falcon/board-info.txt
+
+# Init
 TARGET_UNIFIED_DEVICE := true
-TARGET_INIT_VENDOR_LIB := libinit_w7
-TARGET_OTA_ASSERT_DEVICE := w7,w7ds,w7n,w7nds
-TARGET_RECOVERY_DEVICE_MODULES := libinit_w7
-TARGET_RELEASETOOLS_EXTENSIONS := device/lge/w7
-
-# Bootloader
-TARGET_BOOTLOADER_BOARD_NAME := w7
+TARGET_INIT_VENDOR_LIB := libinit_falcon
+TARGET_RECOVERY_DEVICE_MODULES := libinit_falcon
+TARGET_RELEASETOOLS_EXTENSIONS := device/motorola/falcon
 
 # Kernel
-TARGET_KERNEL_CONFIG := w7ds_cyanogenmod_defconfig
+TARGET_KERNEL_CONFIG := falcon_defconfig
 
-# Filesystem,
-BOARD_FLASH_BLOCK_SIZE := 131072
-BOARD_BOOTIMAGE_PARTITION_SIZE     := 16777216
-BOARD_RECOVERYIMAGE_PARTITION_SIZE := 16777216
-BOARD_SYSTEMIMAGE_PARTITION_SIZE := 1950000000
-BOARD_CACHEIMAGE_PARTITION_SIZE    := 884000000
-BOARD_PERSISTIMAGE_PARTITION_SIZE  := 33554432
+# Partitions
+BOARD_BOOTIMAGE_PARTITION_SIZE := 10485760
+BOARD_RECOVERYIMAGE_PARTITION_SIZE := 10485760
+BOARD_SYSTEMIMAGE_PARTITION_SIZE := 1023410176
+BOARD_USERDATAIMAGE_PARTITION_SIZE := 5930598400
+BOARD_CACHEIMAGE_PARTITION_SIZE := 694288384
 
+# Properties
+TARGET_SYSTEM_PROP += device/motorola/falcon/system.prop

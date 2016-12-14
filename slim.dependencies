@@ -1,6 +1,6 @@
 [
   {
-    "repository": "SlimRoms/device_lge_msm8226-common",
-    "target_path": "device/lge/msm8226-common"
+    "repository": "sub77-SlimRoms/device_motorola_msm8226-common",
+    "target_path": "device/motorola/msm8226-common"
   }
 ]
